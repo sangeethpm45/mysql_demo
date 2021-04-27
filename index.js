@@ -8,18 +8,19 @@ app.post('/register',(req,res)=>{
     var sql = "INSERT INTO users(uname,email,password) VALUES(?,?,?);"
     dataservice.connection.query(sql,[req.body.uname,req.body.email,req.body.password],(err,rows,fields)=>{
         if(!err){
-            res.send({
+            res.status(200).json({
                 status:true,
                 statusCode:200,
                 message:"sucess"
-            }).status(200)
+            })
         }
         else{
-            res.status(422)
-            res.send({
+           
+            res.status(422).json({
                 status:false,
                 statusCode:422,
-                message:"already exists"
+                message:"already exists",
+                error:err.sqlMessage
             })
         }
     })
@@ -30,7 +31,7 @@ app.post('/register',(req,res)=>{
     dataservice.connection.query(sql,[req.body.email],(err,rows,fields)=>{
         if(!err){
             if(rows[0].password==req.body.password){
-                res.send({
+                res.status(200).json({
                     status:true,
                     statusCode:200,
                     message:"login sucess",
@@ -38,8 +39,8 @@ app.post('/register',(req,res)=>{
                 })
 
             }
-            res.status(422)
-            res.send({
+            
+            res.status(422).send({
                 status:false,
                 statusCode:422,
                 message:"email or password incorrect",
